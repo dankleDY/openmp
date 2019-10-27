@@ -8,7 +8,7 @@ UNITFILES =
 
 #------------ EXECUTABLE FILES ---------------
 
-all: histo histo_locks histo_atomic
+all: histo histo_locks histo_atomic histo_creative histo_creative2
 histo : histo.o $(UNITFILES)
 	$(CC) $(CFLAGS) -o histo histo.o $(UNITFILES) $(LIB)
 
@@ -23,3 +23,9 @@ histo_locks : histo_locks.c
 
 histo_atomic : histo_atomic.c
 	$(CC) $(CFLAGS) -o histo_atomic histo_atomic.c $(INCLUDE)
+
+histo_creative : histo_creative.c
+	$(CC) $(CFLAGS) -o histo_creative histo_creative.c $(INCLUDE)
+
+histo_creative2 : histo_creative2.c
+	$(CC) $(CFLAGS) -o histo_creative2 histo_creative2.c $(INCLUDE)
