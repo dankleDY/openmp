@@ -8,7 +8,7 @@ UNITFILES =
 
 #------------ EXECUTABLE FILES ---------------
 
-all: histo histo_lock
+all: histo histo_lock histo_atomic
 histo : histo.o $(UNITFILES)
 	$(CC) $(CFLAGS) -o histo histo.o $(UNITFILES) $(LIB)
 
