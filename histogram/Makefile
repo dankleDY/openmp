@@ -8,12 +8,12 @@ UNITFILES =
 
 #------------ EXECUTABLE FILES ---------------
 
-all: histo histo_lock histo_atomic
+all: histo histo_locks histo_atomic
 histo : histo.o $(UNITFILES)
 	$(CC) $(CFLAGS) -o histo histo.o $(UNITFILES) $(LIB)
 
 clean:
-	rm -f histo *.o histo_lock *.o
+	rm -f histo *.o histo_locks *.o histo_atomic *.o histo_creative *.o 
 
 histo.o : histo.c
 	$(CC) $(CFLAGS) -c histo.c $(INCLUDE) 
