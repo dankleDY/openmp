@@ -352,8 +352,8 @@ long* histogram(char* fn_input) {
 
   /* obtain histogram from image, repeated 100 times */
   for (m=0; m<100; m++) {
-    #pragma omp parallel for default(shared) private(j,id)
     for (i=0; i<image->row; i++) {
+#pragma omp parallel for default(shared) private(j,id)
       for (j=0; j<image->col; j++) {
 	id = image->content[i][j];
 	omp_set_lock(&(lock[id]));
