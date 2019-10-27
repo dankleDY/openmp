@@ -18,5 +18,8 @@ clean:
 histo.o : histo.c
 	$(CC) $(CFLAGS) -c histo.c $(INCLUDE) 
 
-histo_lock : histo_lock.c
-	gcc -O3 -fopenmp -o histo_lock histo_lock.c -lm -lc
+histo_locks : histo_locks.c
+	$(CC) $(CFLAGS) -o histo_locks histo_locks.c $(INCLUDE)
+
+histo_atomic : histo_atomic.c
+	$(CC) $(CFLAGS) -o histo_atomic histo_atomic.c $(INCLUDE)
