@@ -350,6 +350,10 @@ long* histogram(char* fn_input) {
   
   t_start = omp_get_wtime();
 
+  /* set thread number */
+  int thread_num = atoi(getenv("THREAD_NUM"));
+  omp_set_num_threads(thread_num);
+  
   /* obtain histogram from image, repeated 100 times */
   for (m=0; m<100; m++) {
     for (i=0; i<image->row; i++) {
@@ -374,7 +378,7 @@ long* histogram(char* fn_input) {
   printf("--- Histogram Content ---\n");
   for (i=0; i<256; i++)
     printf("histo[%d] = %ld\n", i, histo[i]);
-
+  printf("Thread number is %d\n",thread_num);
   printf("\nRuntime = %10.2f seconds\n", t_end-t_start);
 
   return histo;

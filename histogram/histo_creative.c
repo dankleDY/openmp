@@ -343,9 +343,14 @@ long* histogram(char* fn_input) {
 
   t_start = omp_get_wtime();
 
-  /* obtain histogram from image, repeated 100 times */
 
-  omp_set_num_threads(1);
+  /* set thread num */
+  char * num = getenv("THREAD_NUM");
+  int thread_num = atoi(num);
+  omp_set_num_threads(thread_num);
+
+  
+  /* obtain histogram from image, repeated 100 times */  
   for (m=0; m<100; m++) {
 #pragma omp parallel 
     {
@@ -374,9 +379,9 @@ long* histogram(char* fn_input) {
   printf("--- Histogram Content ---\n");
   for (i=0; i<256; i++)
     printf("histo[%d] = %ld\n", i, histo[i]);
-
+  printf("Thread number is %d\n",thread_num);
   printf("\nRuntime = %10.2f seconds\n", t_end-t_start);
-
+  
   return histo;
 }
 
