@@ -1,58 +1,3 @@
-/*
- * This file is a part of the Forensic Document Examination Toolset
- * created by Yan Solihin as part of his Master thesis at the Nanyang
- * Technological University, Singapore.
- *  
- * Copyright (C) 1995 1996 1997 by Yan Solihin
- *
- * This source file is distributed "as is" in the hope that it will be
- * useful.  The tool set comes with no warranty, and no author or
- * distributor accepts any responsibility for the consequences of its
- * use. 
- * 
- * Everyone is granted permission to copy, modify and redistribute
- * this tool set under the following conditions:
- *
- *    Any publication of results or modification to the unique techniques
- *    implemented in this toolset must make a reference to the author's
- *    work either by refering to the original publication of this technique 
- *    by the author, or by refering it as "private communication" with 
- *    the author, whichever is applicable.
- *
- *    This source code is distributed for non-commercial use only. 
- *    Please contact the maintainer for restrictions applying to 
- *    commercial use.
- *
- *    Permission is granted to anyone to make or distribute copies
- *    of this source code, either as received or modified, in any
- *    medium, provided that all copyright notices, permission and
- *    nonwarranty notices are preserved, and that the distributor
- *    grants the recipient permission for further redistribution as
- *    permitted by this document.
- *
- *    Permission is granted to distribute this file in compiled
- *    or executable form under the same conditions that apply for
- *    source code, provided that either:
- *
- *    A. it is accompanied by the corresponding machine-readable
- *       source code,
- *    B. it is accompanied by a written offer, with no time limit,
- *       to give anyone a machine-readable copy of the corresponding
- *       source code in return for reimbursement of the cost of
- *       distribution.  This written offer must permit verbatim
- *       duplication by anyone, or
- *    C. it is distributed by someone who received only the
- *       executable form, and is accompanied by a copy of the
- *       written offer of source code that they received concurrently.
- *
- * In other words, you are welcome to use, share and improve this
- * source file.  You are forbidden to forbid anyone else to use, share
- * and improve what you give them.
- *
- * INTERNET: solihin@uiuc.edu
- *
- */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -151,6 +96,8 @@ unsigned char** read_img(char *filename, int *row, int *col,
   for(i = 0 ; i < *row; i++)      /* read in image & put in array */
     for(j = 0; j < *col; j++) {
       image[i][j] = fgetc(fptr);
+      // printf("Image pixel: ");
+      // printf("%c\n",image[i][j]);
     }
   
   fclose(fptr);      
@@ -392,22 +339,16 @@ long* histogram(char* fn_input) {
   for (i=0; i<256; i++) {
     histo[i] = 0;
   }
-
   image = Image_Read(fn_input);
 
   t_start = omp_get_wtime();
 
-  /* set thread number */
-  int thread_num = atoi(getenv("THREAD_NUM"));
-  omp_set_num_threads(thread_num);
-  
   /* obtain histogram from image, repeated 100 times */
   for (m=0; m<100; m++) {
-#pragma omp parallel for default(shared) private(i, j)
+#pragma omp parallel for private(i, j) reduction(+:histo[:256]) 
     for (i=0; i<image->row; i++) {
       for (j=0; j<image->col; j++) {
-	#pragma omp atomic update
-        histo[image->content[i][j]]++;
+       	histo[image->content[i][j]]++;
       }
     }
   }
@@ -419,7 +360,7 @@ long* histogram(char* fn_input) {
   printf("--- Histogram Content ---\n");
   for (i=0; i<256; i++)
     printf("histo[%d] = %ld\n", i, histo[i]);
-  printf("Thread number is %d\n",thread_num);
+
   printf("\nRuntime = %10.2f seconds\n", t_end-t_start);
 
   return histo;

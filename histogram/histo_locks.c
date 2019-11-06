@@ -31,7 +31,7 @@ unsigned char** read_img(char *filename, int *row, int *col,
                          int *imgtype)
 {   
   char     mw[5];
-  char    str[10];      
+  char    str[12];      
   int    com;
   unsigned char**  image;
   int     i, j, maxint;
@@ -356,13 +356,12 @@ long* histogram(char* fn_input) {
   
   /* obtain histogram from image, repeated 100 times */
   for (m=0; m<100; m++) {
+#pragma omp parallel for default(shared) private(j)
     for (i=0; i<image->row; i++) {
-#pragma omp parallel for default(shared) private(j,id)
       for (j=0; j<image->col; j++) {
-	id = image->content[i][j];
-	omp_set_lock(&(lock[id]));
+       	omp_set_lock(&(lock[image->content[i][j]]));
 	histo[image->content[i][j]]++;
-	omp_unset_lock(&(lock[id]));
+	omp_unset_lock(&(lock[image->content[i][j]]));
       }
     }
   }

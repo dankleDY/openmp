@@ -104,7 +104,8 @@ hypre_CSRMatrixMatvec( double           alpha,
 
     if (alpha == 0.0)
     {
-       for (i = 0; i < num_rows*num_vectors; i++)
+#pragma omp parallel for default(shared)
+      for (i = 0; i < num_rows*num_vectors; i++)
           y_data[i] *= beta;
 
        return ierr;
@@ -120,11 +121,13 @@ hypre_CSRMatrixMatvec( double           alpha,
    {
       if (temp == 0.0)
       {
+#pragma omp parallel for default(shared)	
 	 for (i = 0; i < num_rows*num_vectors; i++)
 	    y_data[i] = 0.0;
       }
       else
       {
+#pragma omp parallel for default(shared)	
 	 for (i = 0; i < num_rows*num_vectors; i++)
 	    y_data[i] *= temp;
       }
@@ -138,6 +141,7 @@ hypre_CSRMatrixMatvec( double           alpha,
 
    if (num_rownnz < xpar*(num_rows))
    {
+#pragma omp parallel for default(shared) private(m, jj, tempx)
       for (i = 0; i < num_rownnz; i++)
       {
          m = A_rownnz[i];
@@ -168,6 +172,7 @@ hypre_CSRMatrixMatvec( double           alpha,
    }
    else
    {
+#pragma omp parallel for default(shared) private(temp, j, jj)
       for (i = 0; i < num_rows; i++)
       {
          if ( num_vectors==1 )
@@ -197,7 +202,8 @@ hypre_CSRMatrixMatvec( double           alpha,
 
    if (alpha != 1.0)
    {
-      for (i = 0; i < num_rows*num_vectors; i++)
+#pragma omp parallel for default(shared)
+     for (i = 0; i < num_rows*num_vectors; i++)
 	 y_data[i] *= alpha;
    }
 
@@ -269,7 +275,7 @@ hypre_CSRMatrixMatvecT( double           alpha,
 
    if (alpha == 0.0)
    {
-
+#pragma omp parallel for default(shared)
       for (i = 0; i < num_cols*num_vectors; i++)
 	 y_data[i] *= beta;
 
@@ -286,13 +292,13 @@ hypre_CSRMatrixMatvecT( double           alpha,
    {
       if (temp == 0.0)
       {
-
+#pragma omp parallel for default(shared)
 	 for (i = 0; i < num_cols*num_vectors; i++)
 	    y_data[i] = 0.0;
       }
       else
       {
-
+#pragma omp parallel for default(shared)
 	 for (i = 0; i < num_cols*num_vectors; i++)
 	    y_data[i] *= temp;
       }
@@ -383,7 +389,7 @@ hypre_CSRMatrixMatvecT( double           alpha,
 
    if (alpha != 1.0)
    {
-
+#pragma omp parallel for default(shared)
       for (i = 0; i < num_cols*num_vectors; i++)
 	 y_data[i] *= alpha;
    }
